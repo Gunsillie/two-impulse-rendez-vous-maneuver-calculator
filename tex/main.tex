@@ -1,0 +1,221 @@
+
+\documentclass[journal]{IEEEtran}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{ragged2e}
+\usepackage{siunitx}
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usetikzlibrary{shapes,arrows}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+\newlength\figureheight
+\newlength\figurewidth
+\renewcommand\labelitemi{--}
+
+\usepackage{ifthen}
+\usepackage{ifpdf}
+\ifpdf
+\usepackage[pdftex]{hyperref}
+\else
+\usepackage{hyperref}
+\fi
+\usepackage{color}
+
+
+\begin{document}
+
+\title{Space Exploration Engineering\\
+Mid-term Report A2}
+
+\author{Romain~Pessia — Student Number 81723435 \\
+Fall 2017, Keio University }%
+
+\maketitle
+
+\section*{Introduction}
+
+The purpose of this assignment is to put into practice the Clohessy–Wiltshire equations with a simple rendez-vous case between a target and a chaser without means of propulsion. Namely, we will first study how to find the appropriate initial velocity of the chaser, given a desired configuration at a certain time $T$; then, we will look into the velocity at the time of rendez-vous as well as the overall trajectory of the spacecraft.
+
+\section*{A2a: two-impulse rendez-vous maneuver}
+
+In this section, we consider a target---on a circular orbit around the Earth---and a chaser, whose coordinates are defined on a target-centered, target-fixed frame of reference. As such, we define the coordinates of the chaser in this frame of reference wrt. a certain time $t$ as
+
+\begin{equation}
+    \vec{X}(t) = \begin{bmatrix} x(t)\\
+    y(t)\\
+    z(t)\end{bmatrix}
+\end{equation}
+
+The velocity of the chaser is thus defined as follows:
+
+\begin{equation}
+    \vec{V}(t) = \begin{bmatrix} \dot{x}(t)\\
+    \dot{y}(t)\\
+    \dot{y}(t)\end{bmatrix}
+\end{equation}
+
+The Clohessy–Wiltshire equations, applied to the system considered, can then be written under the form
+
+\begin{equation}
+\label{cw}
+    \begin{bmatrix}
+    \vec{X}(t)\\
+    \vec{V}(t)\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    A(t) & B(t)\\
+    C(t) & D(t)\\
+    \end{bmatrix}
+    \begin{bmatrix}
+    \vec{X}(0)\\
+    \vec{V}(0)\\
+    \end{bmatrix}
+\end{equation}
+
+Where
+
+\begin{equation*}
+    A(t)= \begin{bmatrix}
+    1 & 0 & 6(s\theta-\theta)\\
+    0 & c \theta & 0 \\
+    0 & 0 & 4-3c\theta
+    \end{bmatrix}
+\end{equation*}
+\begin{equation*}    
+    B(t)= \begin{bmatrix}
+    (4/\omega)s\theta-3t & 0 & (2/\omega)(c\theta-1) \\
+    0 & (1/\omega)s\theta & 0 \\
+    (2/\omega)(1-c\theta) & 0 & (1/\omega)s\theta
+    \end{bmatrix}
+\end{equation*}
+\begin{equation*}    
+    C(t) =  \begin{bmatrix}
+    0 & 0 & 6\omega(c\theta-1) \\
+    0 & -\omega s\theta & 0 \\
+    0 & 0 & 3\omega s\theta \end{bmatrix}
+\end{equation*}
+\begin{equation*}    
+    D(t) =  \begin{bmatrix}
+    4c\theta-3 & 0 & -2s\theta \\
+    0 & c\theta & 0 \\
+    2s\theta & 0 & c\theta \end{bmatrix}
+\end{equation*}
+With $\omega$ the angular speed of the target in its circular rotation around the Earth, and $\theta$ defined as being equal to $\omega t$. Additionally, $c\theta$ and $s\theta$ stand for $\cos{\theta}$ and $\sin{\theta}$ respectively.
+
+A consequence of Equation \ref{cw} is:
+
+\begin{equation}
+\label{cw2}
+\forall t\geq 0, \vec{X}(t)=A(t)\vec{X}(0)+B(t)\vec{V}(0) 
+\end{equation}
+
+Let us now consider a hypothetical time $T$ where the chaser meets the target. In other terms,
+
+\begin{equation}
+    \vec{X}(T) = \vec{0}
+\end{equation}
+
+Using Equation \ref{cw2}, we derive the following:
+
+\begin{equation}
+    A(T)\vec{X}(0)+B(T)\vec{V}(0)=\vec{0}
+\end{equation}
+\begin{equation}
+    \vec{V}(0)=-B^{-1}(T)A(T)\vec{X}(0) 
+\end{equation}
+The above formula is valid as long as B is invertible, which requires that $8(1-\cos{(\omega T)}) - 3 \omega T \sin{(\omega T)} \neq 0$
+
+
+Similarly, we can calculate the velocity of the chaser at the time $T$ thanks to the formula:
+\begin{equation}
+    \vec{V}(T)=C(T)\vec{X}(0)+D(T)\vec{V}(0) 
+\end{equation}
+
+\section*{A2b: study of the trajectory}
+
+In order to study the trajectory of the chaser wrt. the target, we developed a program in C++ which calculates the coordinates of the chaser until contact, given initial information on the problem. The source code for the program can be found on \cite{git_program}.
+
+First, let us consider a simple case such as the one proposed in the assignment, and described by the table below.
+
+\begin{table}[h!]
+\centering
+ \begin{tabular}{| c | c |} 
+ \hline
+ $x_0$ & 100 \si{km}\\
+ $y_0$ & 0 \si{m}\\
+ $z_0$ & 0 \si{m}\\
+ $h$ & 400 \si{km} \\
+ $T$ & 3600 \si{s}\\
+ \hline
+\end{tabular}
+\caption{Parameters for the first test}
+\end{table}
+
+Given these initial conditions, the program computes all positions of the chaser until the time of rendez-vous. The Figure \ref{plot:xz} shows the trajectory taken by the spacecraft only looking at its $x$ and $z$ coordinates ($y$ stays equal to zero during the whole trajectory because of the initial position of the chaser).
+\begin{figure}[htp!]
+  \centering
+  \input{tikzplot}
+  \caption{Trajectory of the chaser from $t=0$ to $t=T$}
+  \label{plot:xz}
+\end{figure}
+
+\begin{figure}[htp!]
+  \centering
+  \input{tikzplot2}
+  \caption{$x$ and $z$ coordinates of the chaser as a function of time}
+  \label{plot:xzt}
+\end{figure}
+The ellipse-shaped of the trajectory is coherent with the model used and the case studied where only $x_0$ is not equal to zero. We can also draw the evolution of both $x$ and $z$ coordinates as a function of time, as can be seen in Figure \ref{plot:xzt}.
+
+
+
+Both figures show evidence that the target does meet the chaser at $t=T$, as predicted by the equations.
+
+The program also works for non-zero values of $y_0$ and $z_0$, as the plots in Figure \ref{plot:3d} and Figure \ref{plot:xyz} showcase.
+
+\begin{table}[h!]
+\centering
+ \begin{tabular}{| c | c |} 
+ \hline
+ $x_0$ & 100 \si{km}\\
+ $y_0$ & 100 \si{km}\\
+ $z_0$ & 100 \si{km}\\
+ $h$ & 400 \si{km} \\
+ $T$ & 3600 \si{s}\\
+ \hline
+\end{tabular}
+\caption{Parameters for the second test}
+\end{table}
+
+\begin{figure}[htp!]
+  \centering
+  \input{tikzplot3}
+  \caption{3D trajectory of the chaser from $t=0$ to $t=T$}
+  \label{plot:3d}
+\end{figure}
+
+\begin{figure}[htp!]
+  \centering
+  \input{tikzplot4}
+  \caption{$x$, $y$ and $z$ coordinates of the chaser as a function of time}
+  \label{plot:xyz}
+\end{figure}
+
+\appendices
+
+\begin{thebibliography}{9}
+\bibitem{git_program} 
+Romain Pessia. 
+\textit{Two-impulse rendez-vous maneuver calculator}. 
+Github project on \href{https://github.com/romainpessia/two-impulse-rendez-vous-maneuver-calculator}{https://github.com/romainpessia/two-impulse-rendez-vous-maneuver-calculator}, 2017.
+\end{thebibliography}
+
+\end{document}
+
+
