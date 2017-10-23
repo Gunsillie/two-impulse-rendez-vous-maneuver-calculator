@@ -14,6 +14,12 @@ The arguments that can be passed to the program are, in order of input when laun
 - **y0**: ibid.
 - **z0**: ibid.
 
+The different files are created in the same folder as the executable file. They are formatted specifically to be used in TiKz plots, like those of the report.pdf file.
+-**output_tikz_x_t.txt**, **output_tikz_y_t.txt** and **output_tikz_z_t.txt** give the values of all 3 coordinates of the chaser as a function of time (starting from t=0 and ending at t=T).
+-**output_tikz_x_z.txt** gives the values of all (x,z) points of data (useful when the problem is planar and y is constant).
+-**output_tikz_x_y_z.txt** gives the values of all (x,y,z) points of data.
+
+
 ## Notes
 
 - Because **altitude_target** and **w** can be derived from each other, you must set one of them to 0. If both parameters are given a non-zero value, **w** will be calculated again based on the **altitude_target** input by the user.
